@@ -23,6 +23,7 @@ Rmarkdown is to write *reproducible reports with R*. Use it to embed R code chun
    + Images, Images on the web or local files in the same directory, PNG format but jpg for ShareLatex:
    ![](https://www.washingtonexec.com/wp-content/uploads/2014/09/Cerf-Vint-220x220.png)
    + Insert equation Latex with $$ 3 \alpha = 3 $$
+   + superscript^2^
    + horizontal rule (or slide break):
    *** 
 3. Embed R code chunk
