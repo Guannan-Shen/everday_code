@@ -1,1 +1,7 @@
-
+---
+title: "R Markdown Note"
+author: "Guannan Shen"
+date: "Sunday, January 04, 2015"
+output: html_document
+---
+# Introduction 
