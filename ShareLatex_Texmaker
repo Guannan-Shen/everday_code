@@ -1,0 +1,44 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% List Structures in Latex Textmode  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% a .tex file
+%% easy compile to .pdf at https://www.sharelatex.com/
+%% list with \begin{enumerate} or \begin{description}
+
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\title{}
+\author{Guannan Shen}
+\date{Feb. 2018}
+\usepackage{natbib}    %% for reference
+\usepackage{graphicx}  %% more package information at 
+                       %% https://en.wikibooks.org/wiki/LaTeX/Package_Reference
+\begin{document}
+\maketitle             %% a simple textmode with title
+                       %% Only a few packages at the preamble of this document
+\section{Change}       %% section structure with name
+
+\begin{enumerate}      %% list with enumerate
+    \item Admin 
+                       %% A demonstration of folder system for data project
+    This folder works fine......    %% Description of item
+    \item Backgroud
+    \item Code
+       \begin{enumerate}            %% a nested enumerate for nested list structure
+         \item 01DataImport
+         \item 02Exploratory
+       \end{enumerate}
+    \item DataRaw  
+                       %% blank line of Enter to start another paragraph
+    The idea of saving raw data as read-only.....
+    \item Data
+    \item Dissemination
+    \item Reports
+\end{enumerate}
+
+\section{Improvement}  %% another section
+\begin{description}    %% start a list with description
+\item[$\bullet$ A stable framework]               %% add bullet with inline math mode
+\item[$\bullet$ To write more readable code]
+\end{description}
+\end{document}
