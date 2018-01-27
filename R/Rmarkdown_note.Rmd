@@ -4,4 +4,69 @@ author: "Guannan Shen"
 date: "Sunday, January 04, 2015"
 output: html_document
 ---
-# Introduction 
+## Introduction 
+### Brief Summary
+Rmarkdown is to write *reproducible reports with R*. Use it to embed R code chunk and results into kinds of document. Usually, it is required to wrap a complete report up at the first half and put code and additional figures at the second half together with literatures as references.
+### Workflow
+1. open a new Rmarkdown file in Rstudio as .Rmd file
+2. Write content, using Pandoc and .Rmd syntax
+   + lists as this one or unordered startwith *
+   + *Rmd Italic* **Rmd Bold**
+   + #Header1 ##Header2
+   + Inline R code, `r Sys.time() Sys.Date()`
+   + Links as 
+       + https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf
+       + [rmarkdown_cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
+   + Block quotes
+   Dr. Vint Cerf, one of "the fathers of the Internet"
+   > The ability to interact with a computer presence like you would a human assistant is becoming increasingly feasible.
+   + Images, Images on the web or local files in the same directory, PNG format but jpg for ShareLatex:
+   ![](https://www.washingtonexec.com/wp-content/uploads/2014/09/Cerf-Vint-220x220.png)
+   + Insert equation Latex with $$ 3 \alpha = 3 $$
+   + horizontal rule (or slide break):
+   *** 
+3. Embed R code chunk
+4. Render, replace R code with output. 
+
+## R code chunk
+``` {r}
+
+```
+### Options, here is the table 
+Option | Default  |Effect
+-------|----------|-------
+eval   |TRUE      |Whether to evaluate the code and include its results
+echo   |TRUE      |Whether to display code along with its results
+include|TRUE      |If FALSE, knitr will run the chunk but not include the chunk in the final document.
+tidy   | FALSE    |Whether to reformat code in a tidy way when displaying it
+results| "markup" |"markup", "asis", "hold", or "hide"
+fig.width  |7     |Width in inches for plots created in chunk
+fig.height |7     |Height in inches for plots created in chunk
+
+## Appendix
+### Code
+
+```{r Question1 Ref, eval=FALSE, echo=TRUE, prompt=TRUE, tidy=TRUE} 
+ ## no output only code
+```
+
+
+```{r Question2 Ref, eval=FALSE, echo=TRUE, prompt=TRUE, tidy=TRUE}
+
+```
+
+### Citations
+
+```{r, citations, echo=F, message=F}                               
+citation("tidyverse")                           ## citations for packages
+```
+
+
+
+### Session Information                                              
+```{r, echo=F}
+## The session information contains the versions of R          
+##and all packages used in the analysis contained in your R Markdown file.
+MA.session = sessionInfo(package = NULL)
+print(MA.session)
+```
