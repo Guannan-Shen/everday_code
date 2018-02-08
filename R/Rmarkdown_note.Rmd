@@ -2,8 +2,13 @@
 title: "R Markdown Note"
 author: "Guannan Shen"
 date: "Sunday, January 04, 2015"
-output: html_document
+output: html_document:
+         toc: TRUE
+         toc_float: TRUE  
+         
 ---
+<!-- comment for html, add a table of content and a floating one for html --> 
+
 ## Introduction 
 ### Brief Summary
 Rmarkdown is to write *reproducible reports with R*. Use it to embed R code chunk and results into kinds of document. Usually, it is required to wrap a complete report up at the first half and put code and additional figures at the second half together with literatures as references.
@@ -45,12 +50,14 @@ fig.width  |7     |Width in inches for plots created in chunk
 fig.height |7     |Height in inches for plots created in chunk
 
 ## Appendix
-### Code
+### Code {.tabset}   <!-- regular html comment, a tabbed section and subsections --> 
+
+#### Code for 1
 
 ```{r Question1 Ref, eval=FALSE, echo=TRUE, prompt=TRUE, tidy=TRUE} 
  ## no output only code
 ```
-
+#### Code for 2
 
 ```{r Question2 Ref, eval=FALSE, echo=TRUE, prompt=TRUE, tidy=TRUE}
 
