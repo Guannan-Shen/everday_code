@@ -1,0 +1,3 @@
+% to write the underline only
+% such as writing sample code in Latex, e.g. tiderverse::group_by() in R 
+tiderverse::group\underline{ }by()
