@@ -15,10 +15,11 @@ Rmarkdown is to write *reproducible reports with R*. Use it to embed R code chun
 ### Workflow
 1. open a new Rmarkdown file in Rstudio as .Rmd file
 2. Write content, using Pandoc and .Rmd syntax
-   + lists as this one or unordered startwith *
+   + sublist using "plus sign"
+   + lists as this one or unordered list startwith *
    + *Rmd Italic* **Rmd Bold**
-   + #Header1 ##Header2
-   + Inline R code, `r Sys.time() Sys.Date()`
+   + #Header1 ##Header2 ###Header3, the rmarkdown using blank line to begin header
+   + **Inline R code**, `r Sys.time() Sys.Date()`
    + Links as 
        + https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf
        + [rmarkdown_cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
@@ -75,6 +76,6 @@ citation("tidyverse")                           ## citations for packages
 ```{r, echo=F}
 ## The session information contains the versions of R          
 ##and all packages used in the analysis contained in your R Markdown file.
-MA.session = sessionInfo(package = NULL)
-print(MA.session)
+this.session = sessionInfo(package = NULL)
+print(this.session)
 ```
