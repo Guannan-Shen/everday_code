@@ -1,0 +1,193 @@
+---
+title: "6622_HW2"
+author: "Guannan_Shen"
+date: "February 18, 2018"
+output: 
+  pdf_document:
+    number_sections: yes
+    toc: yes
+  html_document:
+    number_sections: yes
+    theme: united
+    toc: yes
+    toc_depth: 5
+    toc_float: yes
+  word_document:
+    toc: yes
+    toc_depth: '5'
+---
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+knitr::opts_chunk$set(engine = "R")
+getwd()                                          ## get the path work directory
+
+## cache = F, if cache = T, will not revaluate code chunk everytime
+## double or more space to insert a line break
+```
+## Methods:
+I’ve carried out three types of analyses to answer your question about Alfuzosin.  
+1. A standard significance test (t-test) to answer the question of whether on average the number of urinations per night differs by more than chance during the periods when you were on and off Alfuzosin.  
+2. A descriptive analysis.  
+3. A graphical analysis.  
+
+## Results
+```{r question1, echo=FALSE, warning=FALSE}
+##prepare the data set with proper class labeled
+library(kableExtra)
+on_drug <- c(1,1,2,2,3,1,0,3,3,2,5,2,1,3,2,1,1,2,1,2,2,2,2,1,1,5,1,2,3,1,2,5,1,5,3,3,3,2,5,2,3,4,3,4,5,3,4,3,2,3,5,2,2,3)
+off_drug <- c(10, 7, 4, 4, 3, 5, 6, 7, 7, 3, 5, 2, 4, 4, 6, 3, 6, 2, 5, 3, 5, 2, 4, 2, 3, 6, 4, 5, 4, 7, 4, 3, 3, 4, 2,4, 4, 3)
+
+drug_class <- c(rep("drug", length(on_drug)), rep("no drug", length(off_drug)))
+
+## not using cbind, cbind returns a matrix which only contains one data type
+night_fre <- data.frame(drug_class,c(on_drug,off_drug))         
+## a data frame has all frequency and a class variable
+colnames(night_fre) <- c("class","urination_frequency")
+# Define a function to get summary of descriptive statistics
+summary_table <- function(drug, non){
+  sd_drug <- sd(drug)
+  sd_nondrug <-sd(non)
+  days_drug <- length(on_drug)
+  days_nondrug <-  length(off_drug)
+  nouridrug <- sum(on_drug <= 1)
+  nourinon <- sum(off_drug <= 1)
+  uridrug <- sum(on_drug >= 6)
+  urinon <- sum(off_drug >= 6)
+  drug <-round(c(days_drug, nouridrug, uridrug, as.matrix(summary(drug))[,1], sd_drug),2)
+  non_drug <- round(c(days_nondrug, nourinon, urinon, as.matrix(summary(non))[,1],sd_nondrug),2)
+  table_des <- rbind(drug, non_drug)
+  colnames(table_des)[c(1,2,3, (ncol(table_des)))] <- c("days","happy nights","bad nights","s.d.")
+  return(table_des)
+}
+des.uri <-summary_table(on_drug,off_drug)
+
+## the pip is from kableExtra library, which need format html or latex
+## the warnings are muted in this case (chunk option), since we need direct beautiful pdf output 
+
+kable(des.uri, caption = "Descriptive Statistics of Nocturia Frequency") %>%
+   add_footnote(c("happy nights: nights with 0 or 1 urinations ",
+                  "bad nights: nights with 6 or more urinations "), notation="alphabet")
+
+# t test two-sided
+test1 <- t.test(x= on_drug ,y= off_drug, alternative = "two.sided")
+```
+
+
+
+1. The mean numbers of urinations per night were (mean ± standard error) (inline r code for mean and s.e.)  
+Off Alfuzosin:	`r des.uri[2,7]` ± `r round(des.uri[2,10]/sqrt(des.uri[2,1]),2)` (you were up on average `r des.uri[2,7]` times per night)  
+On Alfuzosin:	`r des.uri[1,7]` ± `r round(des.uri[1,10]/sqrt(des.uri[1,1]),2)` (you were up on average `r des.uri[1,7]` times per night)   
+A t-test shows that these means differ significantly (by more than natural variation would explain), (p-value < 0.001).  So, you did have about `r des.uri[2,7]-des.uri[1,7] ` fewer urinations per night on average during the period you were on Alfuzosin.  This is a large enough number to make a substantial difference in sleep quality, I would think.  
+2. During the `r des.uri[1,1]` days on Alfuzosin, there were `r des.uri[1,2]` nights with 0 or 1 urinations.  There were no such nights during the `r des.uri[2,1]` days off Alfuzosin.  
+During the `r des.uri[2,1]` days off Alfuzosin, there were `r des.uri[2,3]` nights with 6 or more urinations.  There were no such nights during the `r des.uri[1,1]` days on Alfuzosin.  
+3. Since the observations were made over time, I graphed the nightly number of urinations.  The vertical line indicates the end of the Alfuzosin period.  The horizontal lines show 2-week means (except the final period which is shorter than 2 weeks).  
+The graph on the next page shows the same patterns described in 1 and 2 above.  There appears to be an increase in urinations during the last two weeks of the Alfuzosin period.  For example, during the last 3 weeks on Alfuzosin there were no nights with 0 or 1 voiding.  This could be due to a decrease in effectiveness of the medication over time, or possibly you missed a few doses, or there could be something else that changed.  Since this was noticed from the graph, I didn’t do a formal statistical test on it.  
+
+## Conclusion
+Based on these analyses, I would say that there were fewer urinations during the period when you were on Alfuzosin, particularly during the first several weeks.  The magnitude of the effect as noted above may help you decide if the beneficial effects justify the side-effects.  Please keep in mind that many other things might have possibly changed during the period you collected these data, and changes are not necessarily due to the drug.  
+
+```{r graph1, echo=FALSE, warning=FALSE}
+library(ggplot2)
+library(wesanderson)
+ggplot(night_fre,aes(1:length(class), urination_frequency, colour = class)) +
+  labs(x="Day (May-Aug 2006)", y="# void") +
+  geom_point(size= 3, shape=17) +
+  scale_color_manual(values=wes_palette(n =2, name=("GrandBudapest"))) +
+  geom_vline(xintercept = 54.5)+
+  geom_segment(x=1,xend=14, y= mean(night_fre$urination_frequency[1:14]), yend=mean(night_fre$urination_frequency[1:14]))+
+  geom_segment(x=15,xend=28, y= mean(night_fre$urination_frequency[15:28]), yend=mean(night_fre$urination_frequency[15:28]))+
+  geom_segment(x=29,xend=42, y= mean(night_fre$urination_frequency[29:42]), yend=mean(night_fre$urination_frequency[29:42]))+
+  geom_segment(x=43,xend=56, y= mean(night_fre$urination_frequency[43:56]), yend=mean(night_fre$urination_frequency[43:56]))+
+  geom_segment(x=57,xend=70, y= mean(night_fre$urination_frequency[57:70]), yend=mean(night_fre$urination_frequency[57:70]))+
+  geom_segment(x=71,xend=84, y= mean(night_fre$urination_frequency[71:84]), yend=mean(night_fre$urination_frequency[71:84]))+
+  geom_segment(x=85,xend=92, y= mean(night_fre$urination_frequency[85:92]), yend=mean(night_fre$urination_frequency[85:92]))+
+  annotate("text" , label= "On Alfuzosin" ,x=25,y= 8, size=5)+
+   annotate("text" , label= "Off Alfuzosin" ,x=75,y= 8, size=5)+
+  theme_bw()
+ 
+```
+
+## Code
+
+```{r Question1 Ref, eval=FALSE, echo=TRUE, prompt=TRUE, tidy=TRUE}
+opts_chunk$set(tidy.opts=list(width.cutoff=55),tidy=TRUE)
+
+## Using enter to disrupt line code, to keep all source code fit the page width of PDF
+## in case code shows no respect to "width" in option
+##prepare the data set with proper class labeled
+library(kableExtra)
+on_drug <- c(1,1,2,2,3,1,0,3,3,2,5,2,1,3,2,1,1,2,1,2,2,2,2,1,1,5,1,
+             2,3,1,2,5,1,5,3,3,3,2,5,2,3,4,3,4,5,3,4,3,2,3,5,2,2,3)
+off_drug <- c(10, 7, 4, 4, 3, 5, 6, 7, 7, 3, 5, 2, 4, 4, 6, 
+              3, 6, 2, 5, 3, 5, 2, 4, 2, 3, 6, 4, 5, 4, 7, 4, 3, 3, 4, 2,4, 4, 3)
+
+drug_class <- c(rep("drug", length(on_drug)), rep("no drug", length(off_drug)))
+
+## not using cbind, cbind returns a matrix which only contains one data type
+night_fre <- data.frame(drug_class,c(on_drug,off_drug))         
+## a data frame has all frequency and a class variable
+colnames(night_fre) <- c("class","urination_frequency")
+# Define a function to get summary of descriptive statistics
+summary_table <- function(drug, non){
+  sd_drug <- sd(drug)
+  sd_nondrug <-sd(non)
+  days_drug <- length(on_drug)
+  days_nondrug <-  length(off_drug)
+  nouridrug <- sum(on_drug <= 1)
+  nourinon <- sum(off_drug <= 1)
+  uridrug <- sum(on_drug >= 6)
+  urinon <- sum(off_drug >= 6)
+  drug <-round(c(days_drug, nouridrug, uridrug, as.matrix(summary(drug))[,1], sd_drug),2)
+  non_drug <- round(c(days_nondrug, nourinon, urinon, as.matrix(summary(non))[,1],sd_nondrug),2)
+  table_des <- rbind(drug, non_drug)
+  colnames(table_des)[c(1,2,3, (ncol(table_des)))] <- c("days","happy nights","bad nights","s.d.")
+  return(table_des)
+}
+des.uri <-summary_table(on_drug,off_drug)
+
+## the pip is from kableExtra library, which need format html or latex
+## the warnings are muted in this case (chunk option), since we need direct beautiful pdf output 
+
+kable(des.uri, caption = "Descriptive Statistics of Nocturia Frequency") %>%
+   add_footnote(c("happy nights: nights with 0 or 1 urinations ",
+                  "bad nights: nights with 6 or more urinations "), notation="alphabet")
+
+# t test two-sided
+test1 <- t.test(x= on_drug ,y= off_drug, alternative = "two.sided")
+
+## the graph
+
+library(ggplot2)
+library(wesanderson)
+ggplot(night_fre,aes(1:length(class), urination_frequency, colour = class)) +
+  labs(x="Day (May-Aug 2006)", y="# void") +
+  geom_point(size= 3, shape=17) +
+  scale_color_manual(values=wes_palette(n =2, name=("GrandBudapest"))) +
+  geom_vline(xintercept = 54.5)+
+  geom_segment(x=1,xend=14,
+               y= mean(night_fre$urination_frequency[1:14]),
+               yend=mean(night_fre$urination_frequency[1:14]))+
+  geom_segment(x=15,xend=28, 
+               y= mean(night_fre$urination_frequency[15:28]),
+               yend=mean(night_fre$urination_frequency[15:28]))+
+  geom_segment(x=29,xend=42, 
+               y= mean(night_fre$urination_frequency[29:42]),
+               yend=mean(night_fre$urination_frequency[29:42]))+
+  geom_segment(x=43,xend=56, 
+               y= mean(night_fre$urination_frequency[43:56]),
+               yend=mean(night_fre$urination_frequency[43:56]))+
+  geom_segment(x=57,xend=70, 
+               y= mean(night_fre$urination_frequency[57:70]),
+               yend=mean(night_fre$urination_frequency[57:70]))+
+  geom_segment(x=71,xend=84, 
+               y= mean(night_fre$urination_frequency[71:84]),
+               yend=mean(night_fre$urination_frequency[71:84]))+
+  geom_segment(x=85,xend=92, 
+               y= mean(night_fre$urination_frequency[85:92]),
+               yend=mean(night_fre$urination_frequency[85:92]))+
+  annotate("text" , label= "On Alfuzosin" ,x=25,y= 8, size=5)+
+   annotate("text" , label= "Off Alfuzosin" ,x=75,y= 8, size=5)+
+  theme_bw()
+
+```
