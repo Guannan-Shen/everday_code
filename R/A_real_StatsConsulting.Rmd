@@ -1,5 +1,5 @@
 ---
-title: "6622_HW2"
+title: "A Real World Stats Consulting"
 author: "Guannan_Shen"
 date: "February 18, 2018"
 output: 
