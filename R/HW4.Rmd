@@ -1,0 +1,181 @@
+---
+title: "6601 HW3"
+author: "Guannan Shen"
+date: "September 19, 2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+## A. Ozone Status
+
+```{r, prompt= TRUE, tidy=TRUE, echo=TRUE, eval =TRUE}
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=55),tidy=TRUE)
+library(readr)
+ozone <- read.csv("D:/00 Statistics/Courses/6611 Statistical Methods/I/6/HW3/ozone.csv")
+class(ozone)
+dimozone <- dim(ozone)
+dimozone
+summary(ozone)
+
+## The daily ozone quality is either good or not good.
+## Using relative frequency to estimate the probability 
+pr_good <- 80/dimozone[1]
+paste("The daily probability of good ozone level is roughly: ", round(pr_good,2), sep="")
+
+## The binomial assumption.
+pr_atleast5of7 <- sum(dbinom(5:7,7,pr_good))
+paste("The probability that at least 5 of 7 days have good ozone: ", round(pr_atleast5of7, 3),sep="")
+
+## Normal approximation
+## from the binomial to calculate the \mu and the sd
+mubi <- 7*pr_good
+va_bi <- 7*pr_good*(1-pr_good)
+
+# Using normal approximation, pnorm, 
+# 5.5-4.5 + 6.5- 5.5 + 7.5-6.5
+# Or using 1- pnorm(4.5,)
+pr_normal_atleast5 <- pnorm(7.5, mean = mubi, sd= sqrt(va_bi)) - pnorm(4.5, mean = mubi, sd=sqrt(va_bi))
+paste("Pr(at least 5 of 7 days have good ozone): ", round(pr_normal_atleast5, 4)," (using the normal approximation).",sep="")
+
+
+```
+**4.** I don't think the "good" ozone status follows a binomial distribution. The following days ozone status is dependent on previous days. This violates the independent trials assumption in binomial distribution. In addition, by simply ploting the ozone status to the date, it is obvious that there is a continous pattern of a certain ozone ozone status. This also suggests it is not independent between days.  
+
+
+## B. Estimating Hospital Budget
+
+```{r, prompt= TRUE, tidy=TRUE, echo=TRUE}
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=55),tidy=TRUE)
+library(readr)
+procecost <- read.csv("D:/00 Statistics/Courses/6611 Statistical Methods/I/6/HW3/ProcedureCost.csv")
+class(procecost)
+dim(procecost)
+summary(procecost)
+names(procecost)
+# Part1, create a table, 2 by 2 table, the count of patients in each category
+# for procedure, either 1 or 2, but for cost, turn not 0 into not zero
+for (i in 1: length(procecost$Cost)){
+  if (procecost$Cost[i] == 0)
+  {procecost$Cost[i] <- "Zero"}
+    else 
+    {procecost$Cost[i] <- "Non-Zero"}
+}
+
+### NO loop or if statement
+### -----------------------------------------------
+###  procecost$Cost[procecost$Cost != 0] <- 'Non-Zero'
+###  procecost$Cost[procecost$Cost == 0] <- 'Zero'
+### -------------------------------------------------
+table1 <- table(procecost$Procedure, procecost$Cost, dnn = c("Procedure Group","Cost"))
+table1 <- table1[,c(2,1)]
+table1
+
+## Part2 
+## re-read the file
+proceC <- read.csv("D:/00 Statistics/Courses/6611 Statistical Methods/I/6/HW3/ProcedureCost.csv")
+# The proportion
+p1non0 <- round(table1[1,2]/sum(table1[1,]),4)
+p2non0 <- round(table1[2,2]/sum(table1[2,]),5)
+paste("P1 : ", p1non0, sep="")
+paste("P2 : ", p2non0, sep="")
+
+# mean cost in 1 or 2 
+proce1 <- proceC[proceC$Procedure ==1, ]
+proce2 <- proceC[proceC$Procedure ==2, ]
+proce1c <- proce1[proce1$Cost !=0, ]
+proce2c <- proce2[proce2$Cost !=0, ]
+m1 <- mean(proce1c$Cost)
+m2 <- mean(proce2c$Cost)
+paste("m1 : ", round(m1,3), sep="")
+paste("m2 : ", round(m2,3), sep="")
+# Cal
+v1 <- var(proce1c$Cost)
+v2 <- var(proce2c$Cost)
+paste("V1 : ", round(v1,3), sep="")
+paste("V2 : ", round(v2,3), sep="")
+
+```
+
+** Part 3**  
+For a given subject.  
+$E(Y) = E(ZR) = E(Z)*E(R) = mp$  
+$Var(Y) = E[(ZR)^2] - [E(ZR)]^2 = E(Z^2R^2) - (mp)^2$  
+Thus  
+$Var(Y) = E(Z^2)E(R^2) - (mp)^2 = [Var(Z) + E(Z)^2][Var(R) + E(R)^2]- (mp)^2$  
+$Var(Y) = (v + m^2)[p(1-p) + p^2] - (mp)^2$
+$Var(Y) = p(1-p)v + p(1-p)m^2 + vp^2 = p(1-p)m^2 + vp$
+
+```{r, prompt= TRUE, tidy=TRUE, echo=TRUE}
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=55),tidy=TRUE)
+# Based on part2 
+p1non0
+p2non0
+m1 
+m2
+v1
+v2
+
+# anticipating the patients number, n1 and n2
+n1 <- 120
+n2 <- 200
+
+# The total expenditure is estimated from previous sample mean. 
+# The total expenditure is the sum of sample mean.
+# The sample mean, as defined by Central Limit Theorem, normal distribution
+# BUt the previous variance is not variance of the sample mean. 
+
+expec_t <- n1*m1*p1non0 + n2*m2*p2non0
+va_t <- n1*(p1non0*(1-p1non0)*(m1^2)+v1*p1non0)+ n2*(p2non0*(1-p2non0)*(m2^2)+v2*p2non0)
+hos_budget <- qnorm(0.8, mean = expec_t, sd = va_t^0.5)
+paste("The hospital budget: ", round(hos_budget, 4), " $1000.",sep = "")
+
+
+## Part5 the simulation
+# Still Y = ZR, still Y1 and Y2 
+# for R
+# Z is gamma distribution variables
+# All the p, m, v and n remains the same
+shape1 <- m1^2/v1
+shape2 <- m2^2/v2
+scale1 <- v1/m1
+scale2 <- v2/m2
+TotalE <- NULL
+
+# The simulation 
+set.seed(666)
+for (i in 1:10000){
+  TotalE[i] <- sum((rgamma(n1, shape = shape1, scale = scale1))*rbinom(n1,size=1,p1non0)) + sum((rgamma(n2, shape = shape2, scale = scale2))*rbinom(n2,size=1,p2non0))
+  
+}
+hist(TotalE, xlab = "Total Cost", main = "", breaks = 30)
+# 80% quantile of the vetor TotalE
+hosbu <- quantile(TotalE, probs = 0.8, type = 7)
+paste("The hospital budget by simulation: ", round(hosbu, 4), " $1000.",sep = "")
+
+pererror <- 100*(hos_budget-hosbu)/hosbu
+paste("The percentage error of the CLT approximation is : ", sep = "", round(pererror,2), "% .")
+
+
+```
+
+** Part 6**  
+**a.** In general:  
+1) The sample size is large enough, at least larger than 20. 120 for procedure 1 and 200 for procedure in this case.  
+2) The simulation repeats for a huge iteration number. Hence the sample mean is approximately distributed as a normal distribution, according to the Central Limit Theorem.  
+**b. ** As shown above, the hospital budget by the CLT approximation is 350. 7125, the hospital budget by the simulation is 350.1458. Hence, the percentage error of the approximation is 0.19%. So the CLT approximation is really good in this given case.  
+
+
+
+
+
+```
+
+
+
+
+
+
