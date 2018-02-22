@@ -1,0 +1,97 @@
+---
+title: "66_HW"
+author: "Guannan Shen"
+date: "January 27, 2018"
+output:
+  html_document:
+    number_sections: yes
+    theme: united
+    toc: yes
+    toc_depth: 5
+    toc_float: yes
+  pdf_document:
+    number_sections: yes
+    toc: yes
+  word_document:
+    toc: yes
+    toc_depth: '5'
+---
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+knitr::opts_chunk$set(engine = "R")
+getwd()                                          ## get the path work directory
+                                                 ## cache = F, if cache = T, will not revaluate code chunk everytime
+## double or more space to insert a line break
+```
+
+# Introduction
+# Questions of interest
+## Data Cleaning, Descriptive and Exploratory Analysis
+
+```{r initiation, echo=FALSE,warning=FALSE}
+par(mfrow=c(1,2))
+```
+
+## Question 1
+### Rationale
+
+
+```{r Question1, echo=FALSE, warning=FALSE}
+
+```
+### Results
+## Question 2
+
+
+```{r Question2, echo=FALSE}
+
+```
+
+```{r image, echo=F, eval=T, message=F,fig.width =1, fig.height=1}
+library(png)
+library(grid)
+### img1 <- readPNG("name.png")
+### grid.raster(img1)
+```
+
+
+# Conclusion
+
+# Methods and Materials 
+R(3.4.3) and Rstudio(1.0.153). Linear regression function lm() from package stats. Package
+ 
+# Appendix: References and Code
+
+## Code
+
+```{r Question1 Ref, eval=FALSE, echo=TRUE, prompt=TRUE, tidy=TRUE}
+opts_chunk$set(tidy.opts=list(width.cutoff=55),tidy=TRUE)
+
+
+```
+
+
+```{r Question2 Ref, eval=FALSE, echo=TRUE, prompt=TRUE, tidy=TRUE}
+opts_chunk$set(tidy.opts=list(width.cutoff=55),tidy=TRUE)
+```
+
+## Citations
+
+```{r, citations, echo=F, message=F}
+citation("tidyverse")
+citation("knitr")
+```
+
+
+
+## Session Information
+```{r, echo=F}
+## The session information contains the versions of R 
+##and all packages used in the analysis contained in your R Markdown file.
+MA.session = sessionInfo(package = NULL)
+print(MA.session)
+```
+
+
+
