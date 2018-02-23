@@ -1,0 +1,45 @@
+---
+title: "ElemStatLearn"
+author: "Guannan_Shen"
+date: "February 22, 2018"
+output: 
+  pdf_document:
+    latex_engine: lualatex
+    number_sections: yes
+    toc: yes
+  html_document:
+    number_sections: yes
+    theme: united
+    toc: yes
+    toc_depth: 5
+    toc_float: yes
+  word_document:
+    toc: yes
+    toc_depth: '5'
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+knitr::opts_chunk$set(engine = "R")
+getwd()                                          ## get the path work directory
+                                                 ## cache = F, if cache = T, will not revaluate code chunk everytime
+## double or more space to insert a line break
+```
+
+##SAheart Dataset
+
+```{r initiation, echo=FALSE,warning=FALSE}
+
+require(ElemStatLearn)
+require("tidyverse", quietly = TRUE, warn.conflicts = FALSE)
+data(SAheart)                                          
+attach(SAheart)                       ##using the colnames directly with attach
+str(SAheart)
+saheart.variable <- colnames(SAheart)
+
+## scatterplot matrix with correlation as data exploration
+library(GGally)               ## using gpair http://ggobi.github.io/ggally/#ggally
+ggpairs(SAheart, saheart.variable) 
+
+```
