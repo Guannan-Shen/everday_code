@@ -1,0 +1,111 @@
+---
+title: "6_27_Training"
+author: "Guannan Shen"
+date: "June 27, 2018"
+output:
+  html_document:
+    number_sections: yes
+    theme: united
+    toc: yes
+    toc_depth: 5
+    toc_float: yes
+  pdf_document:
+    number_sections: yes
+    toc: yes
+    toc_depth: 5
+  word_document:
+    toc: yes
+    toc_depth: '5'
+---
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+knitr::opts_chunk$set(engine = "R")
+getwd()                                          ## get the path work directory
+                                                 ## cache = F, if cache = T, will not revaluate code chunk everytime
+## double or more space to insert a line break
+```
+# Introduction
+# Questions of interest
+# Table 1 
+
+```{r initiation, echo=T, eval=TRUE, warning=FALSE}
+require(xtable)
+library(readr)
+delirium <- read_csv("D:/01_CIDA/Training/creating_reports_for_non-stats/delirium_reshaped.csv")
+summary(delirium)
+dim(delirium)
+attach(delirium)
+
+## one patient with multi records, one observation with more than one rows
+paste("Entities in the table 1: ", sep = "", "age", "gender", "length_of_stay_hr", 
+      "pre_existing_dementia", "bin.orderset", "ID is: ", "patient_number")
+apply(delirium, 2, function(x){any(is.na(x))})
+tab1.var <- c("age", "gender", "length_of_stay_hr", 
+      "pre_existing_dementia", "bin.orderset","patient_number", "encounter_id")
+
+##tidyverse
+require(tidyverse)
+delirium %>% select(tab1.var) %>% group_by(encounter_id) %>% 
+  summarise(agen = paste(unique(age), collapse ="," ), gendern = paste0(unique(gender)),  
+            length_of_stay = paste(unique(length_of_stay_hr), collapse = "," ), 
+            pre_dementia = paste(unique(pre_existing_dementia), collapse = ","),
+            order_set = paste(unique(bin.orderset), collapse ="," )
+            ) -> tab1.deli
+
+## using encounter_id or patient_number
+paste("group_by encounter_id this time")
+##
+tab1.deli <- data.frame(tab1.deli)
+# check missing in the final data
+apply(tab1.deli, 2, function(x)any(is.na(x)))
+# transfer everything to numeric
+class(tab1.deli)
+typeof(tab1.deli)
+mode(tab1.deli)
+## the pipeline of tidyverse convert (summarise) data to char
+tab1.deli$agen <- as.numeric(tab1.deli$agen)
+tab1.deli$gendern <- as.numeric(tab1.deli$gendern)
+tab1.deli$length_of_stay <- as.numeric(tab1.deli$length_of_stay)
+tab1.deli$pre_dementia <- as.numeric(tab1.deli$pre_dementia)
+## the order set contains "1,0"
+tab1.deli$`Order Set`[tab1.deli$`Order Set` == "1,0"] <- "1"
+sum(delirium$bin.orderset)
+print("Should be 39 with order set")
+tab1.deli$`Order Set` <- as.numeric(tab1.deli$`Order Set`)
+
+## rename the columns 
+colnames(tab1.deli) <- c("Encounter ID", "Age", "Gender", 
+                         "Length of Hospital Stay", "Pre-dementia Status", 
+                         "Order Set")
+str(tab1.deli)
+## try to investigate the data by the binary variables
+
+sum(delirium$bin.delirium)
+print("This shows all patients have delirium")
+sum(tab1.deli$`Order Set`)
+table(tab1.deli$`Pre-dementia Status`, tab1.deli$`Order Set`,
+      dnn = c("Dementia Status", "Order Set"))
+
+## chi-square assume normal distribution and independence 
+## yates correction
+##  chiefly used when at least one cell of the table has an expected count smaller than 5. 
+prop.test(table(tab1.deli$`Pre-dementia Status`, tab1.deli$`Order Set`), correct = FALSE)
+
+## calculate the table1 
+
+## statistics for the whole dataset 
+all_patients <- nrow(tab1.deli)
+age_mean <- mean(tab1.deli$Age)
+age_sd <- sd(tab1.deli$Age)
+
+gender0 <- mean(tab1.deli$Gender == 0)
+gender0
+## the list 
+## split by pre-dementia
+tab1 <- split(tab1.deli, tab1.deli$`Pre-dementia Status`)
+
+
+
+
+```
