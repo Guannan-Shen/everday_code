@@ -62,3 +62,24 @@ print(ln.replace('love', 'fuck'))
 ## the Containers
 ## list is the python equivalent of array
 print("list can contain elements of different types")
+xs = [3,1,2]
+## the index start from 0
+print(xs, xs[2])
+## count from the end, from -1
+print(xs[-2])
+xs.append("bar")
+xs[2] = "foo"
+print(xs)
+x = xs.pop()
+print(x)
+## access sublist:slicing
+## range is a builtin function that create a list of integer
+nums = list(range(5))
+print(nums)
+print(nums[2:4])
+print(nums[2:])
+print(nums[:2])
+print(nums[:])
+#slice can be negative, delete from the end
+
+
