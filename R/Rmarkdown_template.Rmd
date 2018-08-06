@@ -37,8 +37,9 @@ par(mfrow=c(1,2))
 ## Question 1
 ### Rationale
 
-```{r,echo=TRUE, message=FALSE, warning=FALSE}
+```{r,echo=TRUE, message=FALSE, warning=FALSE, prompt=TRUE, tidy=TRUE}
 ### if you want to show the code alongside the text
+print('Hello World!')
 
 ```
 
