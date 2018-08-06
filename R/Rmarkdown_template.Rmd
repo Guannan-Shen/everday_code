@@ -37,6 +37,10 @@ par(mfrow=c(1,2))
 ## Question 1
 ### Rationale
 
+```{r,echo=TRUE, message=FALSE, warning=FALSE}
+### if you want to show the code alongside the text
+
+```
 
 ```{r Question1, echo=FALSE, warning=FALSE}
 
