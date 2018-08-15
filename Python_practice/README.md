@@ -1,3 +1,1 @@
-Learning from 
-Learning Python Mark Lutz  
-and introduction to CS with Python MIT
+# [Edx MIT 6.001](https://github.com/Guannan-Shen/everday_code/blob/master/Python_practice/computation_programmingwithPy.ipynb)
