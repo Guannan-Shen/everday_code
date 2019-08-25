@@ -1,4 +1,4 @@
-#include<iostream>
+#include <iostream>
 #define N 3 
 void sort(int a[], int);
 void print(int a[], int);
